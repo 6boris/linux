@@ -1,0 +1,315 @@
+
+
+ mkdir /web && mkdir /web/{server,www,upload,log,conf} && mkdir /web/server/{apache,mysql,php,nginx,lib} && mkdir /web/server/mysql/{data,tmp,log}
+
+
+
+/web/
+|-- conf
+|-- log
+|--  upload
+|-- server
+|   |-- apache
+|   |-- lib
+|   |-- mysql
+|   |   |-- data
+|   |   |-- log
+|   |   `-- tmp
+|   |-- nginx
+|   `-- php
+`-- www
+
+
+apr   cd /web/upload/ && wget https://mirrors.tuna.tsinghua.edu.cn/apache/apr/apr-1.5.2.tar.gz && tar -xzvf apr-1.5.2.tar.gz && cd apr-1.5.2 && ./configure --prefix=/web/server/lib/apr --enable-shared=yes --enable-static=no && make && make install 
+
+apr-util cd /web/upload && wget https://mirrors.tuna.tsinghua.edu.cn/apache/apr/apr-util-1.5.4.tar.gz && tar -xzvf apr-util-1.5.4.tar.gz && cd apr-util-1.5.4 && ./configure --prefix=/web/server/lib/apr-util -with-apr=/web/server/lib/apr --enable-shared=yes --enable-static=no && make && make install
+
+
+http://exim.mirror.fr
+PCRE
+yum -y install  gcc && yum -y install gcc-c++ && cd /web/upload && wget ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-8.39.tar.gz && tar -xzvf pcre-8.39.tar.gz && cd pcre-8.39 && ./configure --prefix=/web/server/lib/pcre  --enable-shared=yes --enable-static=no && make && make install
+
+ cp -r /usr/share/libtool/config/config.* /web/ upload/pcre-8.39
+
+yum -y install libtool &&  yum -y install libtool-ltdl-devel && yum -y install libtool-ltdl && yum -y install  gcc && yum -y install gcc-c++ 
+
+
+./configure --prefix=/web/server/lib/pcre  --enable-shared=no --enable-static=yes
+
+
+
+
+
+cd /web/upload && wget https://mirrors.tuna.tsinghua.edu.cn/apache/httpd/httpd-2.4.25.tar.gz && tar -xzvf httpd-2.4.25.tar.gz && cd /web/upload/httpd-2.4.25 && ./configure --prefix=/web/server/apache --with-apr=/web/server/lib/apr --with-apr-util=/web/server/lib/apr-util --with-pcre=/web/server/lib/pcre  --enable-all --enable-rewrite --enable-so --enable-cache --enable-shared=yes --enable-modules=all --enable-static=no && make && make install 
+
+--enable-proxy=shared --enable-proxy-balancer=shared --enable-proxy-http=shared --enable-proxy-connect=shared  --enable-asis=shared --enable-isapi=shared  --enable-mods-shared=all --enable-so
+
+
+./configure --prefix=/web/server/apache \
+--with-apr=/web/server/lib/apr \
+--with-apr-util=/web/server/lib/apr-util \
+--with-pcre=/web/server/lib/pcre \
+--with-mpm=prefork \
+--enable-so \
+--enable-rewrite \
+--enable-mods-shared=all \
+--enable-nonportable-atomics=yes \
+--disable-dav \
+--enable-deflate \
+--enable-cache \
+--enable-disk-cache \
+--enable-mem-cache \
+--enable-file-cache \
+--with-ssl=/web/server/lib/openssl \
+--enable-modules=all  \
+--enable-mods-shared=all
+
+    
+
+
+
+
+./configure //配置源代码树   
+--prefix=/web/server/apache //体系无关文件的顶级安装目录PREFIX ，也就Apache的安装目录。   
+--enable-module=so //打开 so 模块，so 模块是用来提 DSO 支持的 apache 核心模块   
+--enable-mods-shared=all //编译全部的模板，对于不需要我们可以在httpd.conf去掉。   
+--enable-cache //支持缓存   
+--enable-file-cache //支持文件缓存   
+--enable-mem-cache //支持记忆缓存   
+--enable-disk-cache //支持磁盘缓存   
+--enable-static-support //支持静态连接(默认为动态连接)   
+--enable-static-htpasswd //使用静态连接编译 htpasswd - 管理用于基本认证的用户文件   
+--enable-static-htdigest //使用静态连接编译 htdigest - 管理用于摘要认证的用户文件   
+--enable-static-rotatelogs //使用静态连接编译 rotatelogs - 滚动 Apache 日志的管道日志程序   
+--enable-static-logresolve //使用静态连接编译 logresolve - 解析 Apache 日志中的IP地址为主机名   
+--enable-static-htdbm //使用静态连接编译 htdbm - 操作 DBM 密码数据库   
+--enable-static-ab //使用静态连接编译 ab - Apache HTTP 服务器性能测试工具   
+--enable-static-checkgid //使用静态连接编译 checkgid   
+--disable-cgid //禁止用一个外部 CGI 守护进程执行CGI脚本   
+--disable-cgi //禁止编译 CGI 版本的 PHP   
+--enable-ssl // 编译 ssl模块。   
+
+
+
+
+
+
+
+MYSQL 	
+
+https://mirrors.tuna.tsinghua.edu.cn/mysql/downloads/MySQL-5.6/mysql-5.6.34-linux-glibc2.5-x86_64.tar.gz
+
+cd /web/ upload/ && wget http://mirror.bit.edu.cn/mysql/Downloads/MySQL-5.7/mysql-5.7.17-linux-glibc2.5-x86_64.tar.gz && tar -xzvf mysql-5.7.17-linux-glibc2.5-x86_64.tar.gz && cd mysql-5.7.17-linux-glibc2.5-x86_64 && ./bin/mysqld --initialize --user=mysql --basedir=/web/server/mysql --datadir=/web/server/mysql/data 
+
+tar -xzvf mysql-5.7.17-linux-glibc2.5-x86_64.tar.gz && \cp -r ./mysql-5.7.17-linux-glibc2.5-x86_64/* /web/server/mysql && cd /web/server/mysql &&
+
+
+./script/mysql_install_db --basedir=/web/server/mysql --datadir=/web/server/mysql/data --user=mysql
+
+./bin/mysql_ssl_rsa_setup --datadir=/web/server/mysql/data
+
+./bin/mysqld --initialize --user=mysql --basedir=/web/server/mysql --datadir=/web/server/mysql/data --pid-file=/web/server/mysql/tmp/mysql.pid
+
+./bin/mysqld_safe --user=mysql
+./mysqld_safe --defaults-file=/web/server/mysql/my.cnf --user=mysql
+ps -ef|grep mysqld
+
+?yjay&aNF3!u
+
+groupadd mysql
+useradd -r -g mysql mysql
+chown -R mysql:mysql /web/server/mysql/
+
+
+[client]
+user=mysql
+socket=/web/server/mysql/tmp/mysql.sock
+
+[mysqld]
+port=3306
+datadir=/web/server/mysql/
+socket=/web/server/mysql/tmp/mysql.sock
+
+user=mysql
+
+
+
+[mysqld_safe]
+log-error=/web/server/mysql/log/mysqld.log
+pid-file=/web/server/mysql/tmp/mysql.pid
+
+
+
+
+.dtbtb:.)4B9
+
+SET PASSWORD=PASSWORD('NEW PASSWORD');
+
+ –prefix
+
+export PATH="$PATH:/web/server/mysql/bin"
+
+source /etc/profile
+
+
+PHP 
+
+http://museum.php.net/php5/php-5.6.9.tar.gz
+
+./configure --prefix=/web/server/php --with-mysql=/web/server/mysql --with-mysqli=/web/server/mysql/bin/mysql_config --with-apxs2=/web/server/apache/bin/apxs --with-config-file-path=/web/server/php/ --with-libxml-dir=/web/server/lib/libxml2   
+&& make && make install
+
+
+–enable-ftp  –enable-zip–without-iconv  –with-gd –enable-gd-native-ttf –with-curl –with-curlwrappers –with-xsl –with-gettext –with-pear –enable-calendar –enable-mbstring –enable-bcmath –enable-sockets –enable-exif –enable-magic-quotes
+
+
+
+
+./configure --prefix=/web/server/php --with-mysql=/web/server/mysql --with-mysqli=/web/server/mysql/bin/mysql_config --with-apxs2=/web/server/apache/bin/apxs --with-config-file-path=/web/server/php/ --with-libxml-dir=/web/server/lib/libxml2 -enable-ftp -–with-gd -–with-curl -–with-curlwrappers -–with-xsl -–enable-mbstring -–enable-sockets 
+
+
+LoadModule php5_module     modules/libphp5.so
+
+
+
+
+ AddType application/x-compress .Z
+ AddType application/x-gzip .gz .tgz
+
+AddType application/x-httpd-php .php
+AddType application/x-httpd-php-source .phps
+
+
+
+
+C%ulL7any7Rb
+
+ cd / && mkdir web && mkdir /web/{server,www, upload,log,conf} && mkdir /web/server/{apache,mysql,php,nginx,lib} && cd /web/ upload/ && wget https://mirrors.tuna.tsinghua.edu.cn/apache/apr/apr-1.5.2.tar.gz && tar -xzvf apr-1.5.2.tar.gz && cd apr-1.5.2 && ./configure --prefix=/web/server/lib/apr && make && make install && cd /web/ upload && wget https://mirrors.tuna.tsinghua.edu.cn/apache/apr/apr-util-1.5.4.tar.gz && tar -xzvf apr-util-1.5.4.tar.gz && cd apr-util-1.5.4 && ./configure --prefix=/web/server/lib/apr-util -with-apr=/web/server/lib/apr && make && make install && cd /web/ upload && wget ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-8.39.tar.gz && tar -xzvf pcre-8.39.tar.gz && cd pcre-8.39  && ./configure --prefix=/web/server/lib/pcre --enable-shared=no --enable-static=yes && make && make install && cd /web/ upload && wget https://mirrors.tuna.tsinghua.edu.cn/apache/httpd/httpd-2.4.25.tar.gz && tar -xzvf httpd-2.4.25.tar.gz && cd /web/ upload/httpd-2.4.25 && ./configure --prefix=/web/server/apache -with-apr=/web/server/lib/apr -with-apr-util=/web/server/lib/apr-util -with-pcre=/web/server/lib/pcre --enable-shared=no --enable-static=yes && make && make install && cd /web/server/apache/bin && \cp -rf apachectl /etc/init.d/apache && service apache start
+
+
+
+
+./configure --prefix=/web/server/php --with-mysql=/web/server/mysql --with-mysqli=/web/server/mysql/bin/mysql_config --with-apxs2=/web/server/apache/bin/apxs --with-config-file-path=/web/server/php/ --with-libxml-dir=/web/server/lib/libxml2 -enable-ftp -with-curl -with-gettext -with-pear -enable-mbstring -enable-sockets -with-gd
+
+
+yum install libvpx libjpeg libpng zlib libXpm libXpm-devel  t1lib  libt1-devel -y
+
+	./configure --prefix=/web/server/php --with-mysql=/web/server/mysql --with-mysqli=/web/server/mysql/bin/mysql_config --with-apxs2=/web/server/apache/bin/apxs --with-config-file-path=/web/server/php/ --with-libxml-dir=/web/server/lib/libxml2 --with-gd --with-curl --enable-mbstring --with-openssl --with-freetype=/usr/local/
+
+
+libxslt-devel
+net-snmp-devel
+readline-devel
+aspell-devel
+unixODBC-devel
+libicu-devel
+libc-client-devel
+freetype-devel
+libXpm-devel
+libpng-devel
+libjpeg-devel
+libvpx-devel
+enchant-devel
+libcurl-devel
+libmcrypt
+openldap
+openldap-devel
+curl-devel
+net-snmp-devel
+libxslt-devel
+bzip2-devel
+db4-devel
+libxml2-devel
+
+libcurl
+
+
+
+Core
+ctype
+date
+dom
+ereg
+filter
+hash
+iconv
+json
+libxml
+mysql
+mysqli
+pcre
+PDO
+pdo_sqlite
+Phar
+posix
+Reflection
+session
+SimpleXML
+SPL
+sqlite3
+standard
+tokenizer
+xml
+xmlreader
+xmlwriter
+
+
+
+
+
+
+./configure --prefix=/web/server/php --with-mysql=/web/server/mysql --with-mysqli=/web/server/mysql/bin/mysql_config --with-apxs2=/web/server/apache/bin/apxs --with-config-file-path=/web/server/php/ --with-libxml-dir=/web/server/lib/libxml2 --enable-ftp --with-curl=/usr --with-gettext --with-pear --enable-mbstring --enable-sockets --with-gd --with-openssl --enable-mysqlnd --with-freetype-dir=/web/server/lib --disable-fileinfo
+
+
+
+NGINX
+
+--prefix=/web/server/nginx \
+--sbin-path=/web/server/nginx/sbin/ \
+--conf-path=/web/server/nginx/nginx.conf \
+--error-log-path=/web/server/nginx/log/error.log \
+--http-log-path=/web/server/nginx/log/access.log \
+--pid-path=/web/server/nginx/tmp/nginx.pid \
+--lock-path=/web/server/nginx/tmp/nginx.lock \
+--http-client-body-temp-path=web/server/nginx/tmp/client_temp \
+--http-proxy-temp-path=web/server/nginx/tmp/proxy_temp \
+--http-fastcgi-temp-path=web/server/nginx/tmp/fastcgi_temp \
+--http-uwsgi-temp-path=web/server/nginx/tmp/uwsgi_temp \
+--http-scgi-temp-path=web/server/nginx/tmp/scgi_temp \
+--user=nginx \
+--group=nginx \
+--with-http_ssl_module \
+--with-http_realip_module \
+--with-http_addition_module \
+--with-http_sub_module \
+--with-http_dav_module \
+--with-http_flv_module \
+--with-http_mp4_module \
+--with-http_gunzip_module \
+--with-http_gzip_static_module \
+--with-http_random_index_module \
+--with-http_secure_link_module \
+--with-http_stub_status_module \
+--with-http_auth_request_module \
+--with-threads \
+--with-stream \
+--with-stream_ssl_module \
+--with-http_slice_module \
+--with-mail \
+--with-mail_ssl_module \
+--with-file-aio \
+--with-http_v2_module \
+
+
+
+
+./configure  --prefix=/web/server/php56 --with-config-file-path=/web/server/php56  --with-mysql=/web/server/mysql --with-mysqli=/web/server/mysql/bin/mysql_config   --with-iconv-dir --with-freetype-dir=/usr/local/freetype --with-jpeg-dir --with-png-dir --with-zlib --with-libxml-dir=/usr --enable-xml --disable-rpath --enable-bcmath --enable-shmop --enable-sysvsem --enable-inline-optimization --with-curl=/usr/local/curl --enable-mbregex --enable-mbstring --with-mcrypt --enable-ftp --with-gd --enable-gd-native-ttf --with-openssl --with-mhash --enable-pcntl --enable-sockets --with-xmlrpc --enable-zip --enable-soap --with-gettext --disable-fileinfo --enable-opcache --enable-intl
+
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+
+
+
+
+
+

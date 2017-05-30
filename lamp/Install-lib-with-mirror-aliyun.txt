@@ -1,0 +1,114 @@
+基于阿里云源的PHP拓展安装
+
+ mkdir /web && mkdir /web/{server,www,upload,log,conf} && mkdir /web/server/{apache,mysql,php,nginx,lib} && mkdir /web/server/mysql/{data,tmp,log}
+
+yum install gcc gcc-c++ -y \
+yum install autoconf m4 -y
+ 
+cd /web/program 
+wget https://mirrors.tuna.tsinghua.edu.cn/apache/apr/apr-1.5.2.tar.gz  
+tar -xzvf apr-1.5.2.tar.gz  
+wget https://mirrors.tuna.tsinghua.edu.cn/apache/apr/apr-util-1.5.4.tar.gz  
+tar -xzvf apr-util-1.5.4.tar.gz  
+wget http://exim.mirror.fr/pcre/pcre-8.38.tar.gz 
+tar -xzvf pcre-8.38.tar.gz 
+wget https://mirrors.tuna.tsinghua.edu.cn/apache/httpd/httpd-2.4.25.tar.gz 
+tar -xzvf httpd-2.4.25.tar.gz 
+cd apr-1.5.2  && ./configure && make && make install 
+cd ../apr-util-1.5.4 && ./configure --with-apr=/usr/local/apr && make && make install 
+cd ../pcre-8.38 && ./configure && make && make install 
+cd ../httpd-2.4.25 && ./configure --prefix=/web/server/apache --with-apr=/usr/local/apr/ --enable-all --enable-rewrite --enable-so  --enable-shared=yes --enable-static=no && make && make install 
+
+
+
+
+
+
+cd /web/program  && wget https://mirrors.tuna.tsinghua.edu.cn/apache/apr/apr-1.5.2.tar.gz &&
+tar -xzvf apr-1.5.2.tar.gz && wget https://mirrors.tuna.tsinghua.edu.cn/apache/apr/apr-util-1.5.4.tar.gz && tar -xzvf apr-util-1.5.4.tar.gz && wget ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-8.40.tar.gz && tar -xzvf pcre-8.40.tar.gz && wget https://mirrors.tuna.tsinghua.edu.cn/apache/httpd/httpd-2.4.25.tar.gz && tar -xzvf httpd-2.4.25.tar.gz 
+
+
+cd apr-1.5.2 && ./configure && make && make install && cd ../apr-util-1.5.4 && ./configure --with-apr=/usr/local/apr && make && make install && cd ../pcre-8.40 && ./configure  && make && make install && cd ../httpd-2.4.25 && ./configure --prefix=/web/server/apache --with-apr=/usr/local/apr/ --enable-all --enable-rewrite --enable-so  --enable-shared=yes --enable-static=no && make && make install
+
+\cp -rfv /web/server/apache/bin/apachectl /etc/init.d/apache && service apache start
+
+
+
+MySQL
+groupadd mysql && useradd -g mysql mysql
+
+cd /web/program/ && wget http://mirror.bit.edu.cn/mysql/Downloads/MySQL-5.7/mysql-5.7.16-linux-glibc2.5-x86_64.tar.gz && tar -xzvf mysql-5.7.16-linux-glibc2.5-x86_64.tar.gz && cd mysql-5.7.16-linux-glibc2.5-x86_64 && \cp -rfv * /web/server/mysql
+
+
+ln -s /web/server/mysql/my.cnf /etc/myc.nf
+ln -s /web/server/mysql/lib/libmysqlclient.so  /web/server/mysql/lib/libmysqlclient_r.so 
+
+./bin/mysqld --initialize --user=mysql --basedir=/web/server/mysql --datadir=/web/server/mysql/data
+./bin/mysql_ssl_rsa_setup --datadir=/web/server/mysql/data
+
+haK_i0vK96y-
+
+
+[client]
+ port =3306
+ socket = /web/server/mysql/tmp/mysql.sock
+
+[mysqld]
+ user = mysql
+ basedir = /web/server/mysql/
+ datadir = /web/server/mysql/data
+ port = 3306
+ server_id = 1
+ socket = /web/server/mysql/tmp/mysql.sock.
+
+sql_mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES
+                                                  
+
+
+
+
+yum install libxml2 libxml2-devel -y
+
+
+
+
+
+1.  GD
+
+yum install libvpx libvpx-devel -y \
+yum install libjpeg-turbo libjpeg-turbo-devel -y \
+yum install libpng libpng-devel -y \
+yum install libzip libzip-devel -y \
+yum install libXpm libXpm-devel -y \
+yum install freetype freetype-devel -y \
+yum install t1lib  t1lib-devel -y \
+yum install openssl openssl-devel -y \
+yum install zlib zlib-devel -y \
+yum install bzip2 bzip2-devel -y \
+yum install libxml2 libxml2-devel -y \
+yum install gd gd-devel -y \
+yum install gettext gettext-devel -y  \
+yum install gmp gmp-devel -y  \
+yum install curlpp-devel curl -y \
+yum install libicurl-devel libicurl -y
+
+./configure --with-php-config=/web/server/php/bin/php-config  --with-vpx-dir=/usr/ --with-jpeg-dir=/usr/ --with-png-dir=/usr/ --with-xpm-dir=/usr/ --with-freetype-dir=/usr/ --with-t1lib
+
+\cp -rfv ./modules/gd.so /web/server/php/lib/php/extensions
+
+
+1.bcmath
+
+2.
+3.
+4.
+5.
+6.
+7.
+8.
+9.
+10.
+
+
+
+./configure --prefix=/web/server/php --with-mysql=/web/server/mysql --with-mysqli=/web/server/mysql/bin/mysql_config --with-apxs2=/web/server/apache/bin/apxs --with-config-file-path=/web/server/php/ --with-openssl --with-kerberos --with-zlib --with-bz2 --enable-calendar --enable-exif --enable-ftp --with-gd --with-zlib --enable-zip --enable-sysvmsg --enable-sysvsem --enable-sysvshm --enable-mbstring --with-curl --with-freetype-dir=/usr --enable-mysqlnd
