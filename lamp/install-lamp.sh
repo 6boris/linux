@@ -13,8 +13,8 @@
 
 #MAKE DIR
 mkdir /web && \
-mkdir /web/{server,www,upload,log,conf}&& \
-mkdir /web/server/{apache,mysql,php,nginx,lib}&& \
+mkdir /web/{server,www,upload,log,conf,lib}&& \
+mkdir /web/server/{apache,mysql,php,nginx}&& \
 mkdir /web/server/mysql/{data,tmp,log}
 
 #MAKE USERS
@@ -47,9 +47,9 @@ yum install libcurl-devel libcurl -y
 
 #INSTALL APR
 cd /web/upload/&& \
-wget https://mirrors.tuna.tsinghua.edu.cn/apache/apr/apr-1.5.2.tar.gz&& \
-tar -xzvf apr-1.5.2.tar.gz&& \
-cd apr-1.5.2&& \
+wget https://mirrors.tuna.tsinghua.edu.cn/apache/apr/apr-1.6.2.tar.gz&& \
+tar -xzvf apr-1.6.2.tar.gz&& \
+cd apr-1.6.2&& \
 
 ./configure \
 --prefix=/web/server/lib/apr \
@@ -59,9 +59,9 @@ make && make install
 
 #INSTALL APR-UTIL
 cd /web/upload&& \
-wget https://mirrors.tuna.tsinghua.edu.cn/apache/apr/apr-util-1.5.4.tar.gz&& \
-tar -xzvf apr-util-1.5.4.tar.gz&& \
-cd apr-util-1.5.4&& \
+wget https://mirrors.tuna.tsinghua.edu.cn/apache/apr/apr-util-1.6.0.tar.gz&& \
+tar -xzvf apr-util-1.6.0.tar.gz&& \
+cd apr-util-1.6.0&& \
 ./configure --prefix=/web/server/lib/apr-util \
 -with-apr=/web/server/lib/apr \
 --enable-shared=yes \
@@ -70,8 +70,8 @@ cd apr-util-1.5.4&& \
 
 #INSTALL PCRE
 cd /web/upload&& \
-wget ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-8.39.tar.gz && tar -xzvf pcre-8.39.tar.gz&& \
-cd pcre-8.39&& \
+wget ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-8.41.tar.gz && tar -xzvf pcre-8.41.tar.gz&& \
+cd pcre-8.41&& \
 ./configure \
 --prefix=/web/server/lib/pcre \  
 --enable-shared=yes \
@@ -80,9 +80,9 @@ make && make install
 
 #INSTALL APACHE
 cd /web/upload&& \
-wget https://mirrors.tuna.tsinghua.edu.cn/apache/httpd/httpd-2.4.25.tar.gz&& \
-tar -xzvf httpd-2.4.25.tar.gz&& \
-cd /web/upload/httpd-2.4.25&& \
+wget https://mirrors.tuna.tsinghua.edu.cn/apache/httpd/httpd-2.4.27.tar.gz&& \
+tar -xzvf httpd-2.4.27.tar.gz&& \
+cd /web/upload/httpd-2.4.27&& \
 ./configure --prefix=/web/server/apache \
 --with-apr=/web/server/lib/apr \
 --with-apr-util=/web/server/lib/apr-util \
